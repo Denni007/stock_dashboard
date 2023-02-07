@@ -83,7 +83,8 @@ export default function Router() {
             { path: 'product/new', element: <EcommerceProductCreate /> },
             { path: 'product/:name/:code/edit', element: <EcommerceProductEdit /> },
             { path: 'checkout', element: <EcommerceCheckout /> },
-            { path: 'invoice/:code', element: <EcommerceInvoice /> },
+            { path: 'invoice/', element: <EcommerceInvoice /> },
+            { path: 'invoice/new', element: <InvoiceCreate/> },
           ],
         },
         {
@@ -96,6 +97,24 @@ export default function Router() {
             { path: 'new', element: <UserCreate /> },
             { path: ':name/edit', element: <UserCreate /> },
             { path: 'account', element: <UserAccount /> },
+          ],
+        },
+        {
+          path: 'design',
+          children: [
+            { element: <Navigate to="/dashboard/user/profile" replace />, index: true },
+            { path: 'list', element: <DesignList /> },
+            { path: 'new', element: <DesignCreate /> },
+            { path: ':name/edit', element: <DesignCreate /> },
+          ],
+        },
+        {
+          path: 'stock',
+          children: [
+            { element: <Navigate to="/dashboard/stock/profile" replace />, index: true },
+            { path: 'list', element: <StockList /> },
+            { path: 'new', element: <StockCreate /> },
+            { path: ':name/edit', element: <StockCreate /> },
           ],
         },
         {
@@ -182,14 +201,26 @@ const EcommerceCheckout = Loadable(lazy(() => import('../pages/dashboard/Ecommer
 const EcommerceProductEdit = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductEdit')));
 
 const EcommerceInvoice = Loadable(lazy(() => import('../pages/dashboard/EcommerceInvoice')));
+const EcommerceInvoiceEdit = Loadable(lazy(() => import('../pages/dashboard/EcommerceInvoiceEdit')));
+const InvoiceCreate = Loadable(lazy(() => import('../pages/dashboard/InvoiceCreate')));
+
 const BlogPosts = Loadable(lazy(() => import('../pages/dashboard/BlogPosts')));
 const BlogPost = Loadable(lazy(() => import('../pages/dashboard/BlogPost')));
 const BlogNewPost = Loadable(lazy(() => import('../pages/dashboard/BlogNewPost')));
 const UserProfile = Loadable(lazy(() => import('../pages/dashboard/UserProfile')));
 const UserCards = Loadable(lazy(() => import('../pages/dashboard/UserCards')));
 const UserList = Loadable(lazy(() => import('../pages/dashboard/UserList')));
+
 const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')));
 const UserCreate = Loadable(lazy(() => import('../pages/dashboard/UserCreate')));
+
+const DesignList = Loadable(lazy(() => import('../pages/dashboard/DesignList')));
+const DesignCreate = Loadable(lazy(() => import('../pages/dashboard/DesignCreate')));
+
+
+const StockList = Loadable(lazy(() => import('../pages/dashboard/StockList')));
+const StockCreate = Loadable(lazy(() => import('../pages/dashboard/StockCreate')));
+
 const Chat = Loadable(lazy(() => import('../pages/dashboard/Chat')));
 const Mail = Loadable(lazy(() => import('../pages/dashboard/Mail')));
 const Calendar = Loadable(lazy(() => import('../pages/dashboard/Calendar')));

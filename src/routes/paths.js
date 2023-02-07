@@ -61,6 +61,18 @@ export const PATH_DASHBOARD = {
     editById: path(ROOTS_DASHBOARD, `/user/reece-chung/edit`),
     account: path(ROOTS_DASHBOARD, '/user/account')
   },
+  stock: {
+    root: path(ROOTS_DASHBOARD, '/stock'),
+    list: path(ROOTS_DASHBOARD, '/stock/list'),
+    newStock: path(ROOTS_DASHBOARD, '/stock/new'),
+    editById: path(ROOTS_DASHBOARD, `/stock/reece-chung/edit`)
+  },
+  design: {
+    root: path(ROOTS_DASHBOARD, '/design'),
+    list: path(ROOTS_DASHBOARD, '/design/list'),
+    newDesign: path(ROOTS_DASHBOARD, '/design/new'),
+    editById: path(ROOTS_DASHBOARD, `/design/reece-chung/edit`),
+  },
   eCommerce: {
     root: path(ROOTS_DASHBOARD, '/e-commerce'),
     shop: path(ROOTS_DASHBOARD, '/e-commerce/shop'),
@@ -70,7 +82,8 @@ export const PATH_DASHBOARD = {
     newProduct: path(ROOTS_DASHBOARD, '/e-commerce/product/new'),
     editById: path(ROOTS_DASHBOARD, '/e-commerce/product/nike-blazer-low-77-vintage/edit'),
     checkout: path(ROOTS_DASHBOARD, '/e-commerce/checkout'),
-    invoice: path(ROOTS_DASHBOARD, '/e-commerce/invoice')
+    invoice: path(ROOTS_DASHBOARD, '/e-commerce/invoice'),
+    newInvoice: path(ROOTS_DASHBOARD, '/e-commerce/invoice/new')
   },
   blog: {
     root: path(ROOTS_DASHBOARD, '/blog'),

@@ -49,17 +49,29 @@ const signin = (email, password) => async (dispatch) => {
     }
   }
   
-  
-  const detailsUser = (userId) => async (dispatch, getState) => {
-  
-    dispatch({ type: USER_DETAILS_REQUEST, payload: userId });
-    const {
-      userSignin: { userInfo },
-    } = getState();
+  const createClient = (clientName,clientId, gst, phoneNumber,address) => async (dispatch) => {
+    dispatch({ type: USER_REGISTER_REQUEST, payload: { clientName,clientId, gst, phoneNumber,address } });
     try {
-      const { data } = await Axios.get(`/api/users/${userId}`, {
-        headers: { Authorization: `Bearer ${userInfo.token}` },
-      });
+      const { data } = await Axios.post(`http://localhost:5000/api/users/createClient`, { clientName,clientId, gst, phoneNumber,address});
+      
+      dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
+     
+      
+    } catch (error) {
+      dispatch({ type: USER_REGISTER_FAIL, payload:  error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message,});
+    }
+  }
+  
+  
+  
+  const clientDetails = (userId) => async (dispatch, getState) => {
+  
+    try {
+      console.log(userId.toUpperCase());
+
+      const { data } = await Axios.get(`http://localhost:5000/api/users/${userId.toUpperCase()}`);
       dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
       const message =
@@ -71,18 +83,12 @@ const signin = (email, password) => async (dispatch) => {
   };
 
 
-  const updateUserProfile = (user) => async (dispatch, getState) => {
+  const updateClient = (user) => async (dispatch, getState) => {
     dispatch({ type: USER_UPDATE_PROFILE_REQUEST, payload: user });
-    const {
-      userSignin: { userInfo },
-    } = getState();
+    
     try {
-      const { data } = await Axios.put(`/api/users/profile`, user, {
-        headers: { Authorization: `Bearer ${userInfo.token}` },
-      });
+      const { data } = await Axios.put(`/api/users/updateclient`, user);
       dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
-      dispatch({ type: USER_SIGNIN_SUCCESS, payload: data });
-      localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error) {
       const message =
         error.response && error.response.data.message
@@ -92,18 +98,12 @@ const signin = (email, password) => async (dispatch) => {
     }
   }
  
-const listUsers = (userId) => async (dispatch, getState) => {
+const listUsers = () => async (dispatch, getState) => {
   dispatch({ type: USER_LIST_REQUEST });
   
   try {
-    const {
-      userSignin: { userInfo },
-    } = getState();
-    const { data } = await Axios.get('/api/users', {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    });
+    
+    const { data } = await Axios.get('http://localhost:5000/api/users/');
     dispatch({ type: USER_LIST_SUCCESS, payload: data });
   } catch (error) {
     const message =
@@ -111,6 +111,22 @@ const listUsers = (userId) => async (dispatch, getState) => {
         ? error.response.data.message
         : error.message;
     dispatch({ type: USER_LIST_FAIL, payload: message });
+  }
+};
+
+
+const deleteClient = (userId) => async (dispatch, getState) => {
+  dispatch({ type: USER_DELETE_REQUEST, payload: userId });
+  
+  try {
+    const { data } = await Axios.delete(`http://localhost:5000/api/users/${userId}`);
+    dispatch({ type: USER_DELETE_SUCCESS, payload: data });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch({ type: USER_DELETE_FAIL, payload: message });
   }
 };
 
@@ -125,4 +141,4 @@ const signout = () => (dispatch) => {
   
 
   
-  export { signin ,signup ,detailsUser ,updateUserProfile,listUsers, signout};
+  export { signin ,signup ,createClient,clientDetails ,updateClient,deleteClient,listUsers, signout};

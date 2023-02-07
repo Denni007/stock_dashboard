@@ -13,9 +13,9 @@ InvoicePDF.propTypes = {
 };
 
 export default function InvoicePDF({ invoice }) {
-  const { _id, orderItems, subtotal,taxes, total, isPaid, discount, invoiceTo, shipping } = invoice;
-  //  const subTotal = sum(items.map((item) => item.price * item.qty));
- // const total = subtotal - discount + taxes;
+  const { id, items, taxes, status, discount, invoiceTo, invoiceFrom } = invoice;
+  const subTotal = sum(items.map((item) => item.price * item.qty));
+  const total = subTotal - discount + taxes;
 
   return (
     <Document>
@@ -23,23 +23,23 @@ export default function InvoicePDF({ invoice }) {
         <View style={[styles.gridContainer, styles.mb40]}>
           <Image source="/logo/logo_full.jpg" style={{ height: 32 }} />
           <View style={{ alignItems: 'flex-end', flexDirection: 'column' }}>
-            <Text style={styles.h3}>{isPaid}</Text>
-            <Text>{_id}</Text>
+            <Text style={styles.h3}>{status}</Text>
+            <Text>INV-{id}</Text>
           </View>
         </View>
 
         <View style={[styles.gridContainer, styles.mb40]}>
           <View style={styles.col6}>
-            {/* <Text style={[styles.overline, styles.mb8]}>Invoice from</Text>
+            <Text style={[styles.overline, styles.mb8]}>Invoice from</Text>
             <Text style={styles.body1}>{invoiceFrom.name}</Text>
-            <Text style={styles.body1}>{invoiceFrom.address}</Text> */}
-            {/* <Text style={styles.body1}>{invoiceFrom.phone}</Text> */}
+            <Text style={styles.body1}>{invoiceFrom.address}</Text>
+            <Text style={styles.body1}>{invoiceFrom.phone}</Text>
           </View>
           <View style={styles.col6}>
             <Text style={[styles.overline, styles.mb8]}>Invoice to</Text>
-            <Text style={styles.body1}>{shipping.receiver}</Text>
-            <Text style={styles.body1}>{shipping.fullAddress}</Text>
-            {/* <Text style={styles.body1}>{invoiceTo.phone}</Text> */}
+            <Text style={styles.body1}>{invoiceTo.name}</Text>
+            <Text style={styles.body1}>{invoiceTo.address}</Text>
+            <Text style={styles.body1}>{invoiceTo.phone}</Text>
           </View>
         </View>
 
@@ -67,23 +67,23 @@ export default function InvoicePDF({ invoice }) {
           </View>
 
           <View style={styles.tableBody}>
-            {orderItems.map((item, index) => (
+            {items.map((item, index) => (
               <View style={styles.tableRow} key={item.id}>
                 <View style={styles.tableCell_1}>
                   <Text>{index + 1}</Text>
                 </View>
                 <View style={styles.tableCell_2}>
-                  <Text style={styles.subtitle2}>{item.name}</Text>
+                  <Text style={styles.subtitle2}>{item.title}</Text>
                   <Text>{item.description}</Text>
                 </View>
                 <View style={styles.tableCell_3}>
-                  <Text>{item.quantity}</Text>
+                  <Text>{item.qty}</Text>
                 </View>
                 <View style={styles.tableCell_3}>
                   <Text>{item.price}</Text>
                 </View>
                 <View style={[styles.tableCell_3, styles.alignRight]}>
-                  <Text>{fCurrency(item.price * item.quantity)}</Text>
+                  <Text>{fCurrency(item.price * item.qty)}</Text>
                 </View>
               </View>
             ))}
@@ -96,7 +96,7 @@ export default function InvoicePDF({ invoice }) {
                 <Text>Subtotal</Text>
               </View>
               <View style={[styles.tableCell_3, styles.alignRight]}>
-                <Text>{fCurrency(subtotal)}</Text>
+                <Text>{fCurrency(subTotal)}</Text>
               </View>
             </View>
 
@@ -145,7 +145,7 @@ export default function InvoicePDF({ invoice }) {
           </View>
           <View style={[styles.col4, styles.alignRight]}>
             <Text style={styles.subtitle2}>Have a Question?</Text>
-            <Text>support@amazona.com</Text>
+            <Text>support@abcapp.com</Text>
           </View>
         </View>
       </Page>

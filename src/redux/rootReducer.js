@@ -3,8 +3,9 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { productCreateReducer, productDeleteReducer, productDetailsReducer, productListReducer, productUpdateReducer } from '../reducers/productReducers';
 import {  addressCreateReducer, addressReducer, cartReducer, deleteAddressReducer } from '../reducers/cartReducers';
-import { userRegisterReducer, userSigninReducer } from '../reducers/userReducers';
+import { clientCreateReducer, clientDetailReducer, clientUpdateReducer  , clientDeleteReducer, userListReducer, userSigninReducer } from '../reducers/userReducers';
 import { orderCreateReducer, orderDeleteReducer, orderDetailsReducer, orderListReducer, orderPayReducer } from '../reducers/orderReducers';
+import { stockCreateReducer, stockDeleteReducer, stockDetailReducer, stockListReducer, stockUpdateReducer } from '../reducers/stockReducers';
 
 // slices
 import mailReducer from './slices/mail';
@@ -12,6 +13,7 @@ import chatReducer from './slices/chat';
 import productReducer from './slices/product';
 import calendarReducer from './slices/calendar';
 import kanbanReducer from './slices/kanban';
+import { designCreateReducer, designDeleteReducer, designDetailReducer, designListReducer, designUpdateReducer } from '../reducers/designReducers';
 
 // ----------------------------------------------------------------------
 
@@ -47,7 +49,22 @@ const rootReducer = combineReducers({
   calendar: calendarReducer,
   kanban: kanbanReducer,
   userSignin:  persistReducer(userPersistConfig, userSigninReducer),
-  userRegister: userRegisterReducer,
+ 
+  userList: userListReducer,
+  designList: designListReducer,
+  designCreate : designCreateReducer,
+  designDelete:designDeleteReducer,
+  designDetail : designDetailReducer,
+  designUpdate:designUpdateReducer, 
+  stockList: stockListReducer,
+  stockCreate : stockCreateReducer,
+  stockDelete:stockDeleteReducer,
+  stockDetail : stockDetailReducer,
+  stockUpdate:stockUpdateReducer, 
+  clientCreate : clientCreateReducer,
+  clientDetail : clientDetailReducer,
+  clientUpdate : clientUpdateReducer,
+  clientDelete:clientDeleteReducer,
   cart: cartReducer,
   addressCreate: addressCreateReducer,
   addressList: addressReducer,

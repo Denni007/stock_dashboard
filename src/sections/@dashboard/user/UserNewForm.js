@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+
 import * as Yup from 'yup';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSnackbar } from 'notistack';
@@ -18,6 +20,8 @@ import { countries } from '../../../_mock';
 // components
 import Label from '../../../components/Label';
 import { FormProvider, RHFSelect, RHFSwitch, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
+import { createClient, updateClient } from '../../../actions/userActions';
+import { USER_UPDATE_PROFILE_RESET, USER_UPDATE_RESET } from '../../../constants/userConstants';
 
 // ----------------------------------------------------------------------
 
@@ -26,44 +30,33 @@ UserNewForm.propTypes = {
   currentUser: PropTypes.object,
 };
 
+
 export default function UserNewForm({ isEdit, currentUser }) {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email(),
+    clientName: Yup.string().required('Name is required'),
+    clientId: Yup.string().required('clientId is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
     address: Yup.string().required('Address is required'),
-    country: Yup.string().required('country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    role: Yup.string().required('Role Number is required'),
-    avatarUrl: Yup.mixed().test('required', 'Avatar is required', (value) => value !== ''),
+    gst: Yup.string().required('gst is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || '',
-      email: currentUser?.email || '',
+      clientName: currentUser?.clientName || '',
+      clientId: currentUser?.clientId || '',
       phoneNumber: currentUser?.phoneNumber || '',
       address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      state: currentUser?.state || '',
-      city: currentUser?.city || '',
-      zipCode: currentUser?.zipCode || '',
-      avatarUrl: currentUser?.avatarUrl || '',
-      isVerified: currentUser?.isVerified || true,
-      status: currentUser?.status,
-      company: currentUser?.company || '',
-      role: currentUser?.role || '',
+      gst: currentUser?.gst || '',
+     
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentUser]
   );
-
+  
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
     defaultValues,
@@ -80,46 +73,63 @@ export default function UserNewForm({ isEdit, currentUser }) {
 
   const values = watch();
 
+  const clientCreate = useSelector(state => state.clientCreate);
+  const { loading, userInfo, error } = clientCreate;
+
+  const clientUpdate = useSelector((state) => state.clientUpdate);
+  const {
+    loading: loadingUpdate,
+    error: errorUpdate,
+    success: successUpdate,
+  } = clientUpdate;
+
   useEffect(() => {
     if (isEdit && currentUser) {
       reset(defaultValues);
     }
-    if (!isEdit) {
+    if (!loading && error ) {
+      console.log(error); 
+     
+    }
+    if (isEdit && successUpdate) {
+      dispatch({ type: USER_UPDATE_PROFILE_RESET });
+      navigate(PATH_DASHBOARD.user.list);
+    }
+    if (!isEdit && error) {
+      console.log(error);       //  reset(defaultValues);
+    }
+    if (!isEdit && userInfo) {
+     // enqueueSnackbar(error); 
       reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEdit, currentUser]);
+  }, [isEdit, currentUser,successUpdate,userInfo]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
-      navigate(PATH_DASHBOARD.user.list);
+      if (isEdit) {
+        dispatch(
+          updateClient(data)
+        );
+      }
+      else{
+        dispatch(createClient(data.clientName, data.clientId, data.gst, data.phoneNumber,data.address));
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        reset();
+      }
+        enqueueSnackbar(!isEdit && userInfo.length>0 ? 'Create success!' : 'Update success!'); 
+      
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
-
-      if (file) {
-        setValue(
-          'avatarUrl',
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        );
-      }
-    },
-    [setValue]
-  );
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      
       <Grid container spacing={3}>
+      {/*
         <Grid item xs={12} md={4}>
           <Card sx={{ py: 10, px: 3 }}>
             {isEdit && (
@@ -153,9 +163,9 @@ export default function UserNewForm({ isEdit, currentUser }) {
                   </Typography>
                 }
               />
-            </Box>
+              </Box>
 
-            {isEdit && (
+             {isEdit && (
               <FormControlLabel
                 labelPlacement="start"
                 control={
@@ -183,7 +193,7 @@ export default function UserNewForm({ isEdit, currentUser }) {
                 }
                 sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
               />
-            )}
+            )} 
 
             <RHFSwitch
               name="isVerified"
@@ -199,9 +209,9 @@ export default function UserNewForm({ isEdit, currentUser }) {
                 </>
               }
               sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
+            /> 
           </Card>
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
@@ -213,25 +223,23 @@ export default function UserNewForm({ isEdit, currentUser }) {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name="name" label="Full Name" />
-              <RHFTextField name="email" label="Email Address" />
+              <RHFTextField name="clientName" label="Client Name" />
+             <RHFTextField name="clientId" label="Client ID"  disabled={isEdit}/>
               <RHFTextField name="phoneNumber" label="Phone Number" />
 
-              <RHFSelect name="country" label="Country" placeholder="Country">
+              {/* <RHFSelect name="country" label="Country" placeholder="Country">
                 <option value="" />
                 {countries.map((option) => (
                   <option key={option.code} value={option.label}>
                     {option.label}
                   </option>
                 ))}
-              </RHFSelect>
+              </RHFSelect> */}
 
-              <RHFTextField name="state" label="State/Region" />
-              <RHFTextField name="city" label="City" />
+              <RHFTextField name="gst" label="GST" />
+              {/* <RHFTextField name="city" label="City" /> */}
               <RHFTextField name="address" label="Address" />
-              <RHFTextField name="zipCode" label="Zip/Code" />
-              <RHFTextField name="company" label="Company" />
-              <RHFTextField name="role" label="Role" />
+              
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
