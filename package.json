@@ -129,5 +129,9 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "prettier": "^2.5.1",
     "typescript": "^4.4.4"
-  }
+  },
+  "resolutions": {
+"@react-pdf/font": "2.2.1",
+"@react-pdf/pdfkit": "2.1.0"
+}
 }
